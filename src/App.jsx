@@ -337,7 +337,7 @@ export default function App() {
       <footer className="mt-20 border-t border-cyber-border bg-cyber-panel py-8 text-center text-cyber-text/50">
         <div className="flex justify-center items-center gap-2 mb-4">
           <ShieldCheck className="w-6 h-6 text-cyber-blue" />
-          <span className="font-display font-bold text-lg text-white">CyberKavach AI</span>
+          <span className="font-display font-bold text-lg text-white">RakshaNetra AI</span>
         </div>
         <p>Protecting Citizens. An AI-Based Multi-Language Scam Awareness Initiative.</p>
         <p className="mt-2 text-sm">2026 © All Rights Reserved</p>

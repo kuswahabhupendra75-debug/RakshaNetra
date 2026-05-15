@@ -53,7 +53,7 @@ export const TRANSLATIONS = {
   'English': {
     welcome: "Select Your Language",
     continue: "Continue to Knowledge Base",
-    nav_title: "RAKSHANETRA",
+    nav_title: "CYBERKAVACH AI",
     help_btn: "1930 Help",
     hero_badge: "AI-Powered Awareness",
     hero_title1: "Don't Be A Victim.",

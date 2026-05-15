@@ -16,8 +16,9 @@ export default function App() {
   const [language, setLanguage] = useState('English');
   const [scanInput, setScanInput] = useState('');
   const [scanStatus, setScanStatus] = useState('idle');
-  
   const [selectedScam, setSelectedScam] = useState(null); 
+  const [simulatorMode, setSimulatorMode] = useState(false);
+  const [simulatorStep, setSimulatorStep] = useState(0);
 
   const t = TRANSLATIONS[language] || TRANSLATIONS['English'];
 
@@ -131,6 +132,108 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* ── Interactive Scam Simulator Modal ── */}
+      <AnimatePresence>
+        {simulatorMode && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+          >
+            <div className="relative w-full max-w-[400px] h-[750px] max-h-[90vh] bg-black border-[8px] border-gray-800 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col">
+              {/* Phone Header */}
+              <div className="bg-gray-900 px-6 py-2 flex justify-center items-center rounded-t-[2.5rem]">
+                <div className="w-32 h-6 bg-black rounded-b-3xl"></div>
+              </div>
+              
+              {/* Phone Screen */}
+              <div className="flex-1 bg-white flex flex-col relative">
+                
+                {simulatorStep === 0 && (
+                  <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="p-6 h-full flex flex-col justify-center text-center bg-gray-50">
+                    <MessageSquare className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Incoming Message</h3>
+                    <p className="text-gray-600 mb-8">You are about to receive a simulated SMS. How will you react?</p>
+                    <button onClick={() => setSimulatorStep(1)} className="bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors">Start Simulation</button>
+                    <button onClick={() => setSimulatorMode(false)} className="mt-4 text-gray-500 font-semibold hover:text-gray-800">Cancel</button>
+                  </motion.div>
+                )}
+
+                {simulatorStep === 1 && (
+                  <div className="flex flex-col h-full bg-gray-100">
+                    <div className="bg-gray-200 py-4 px-4 flex items-center gap-3 border-b">
+                      <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-white"><Globe className="w-6 h-6"/></div>
+                      <div>
+                        <div className="font-bold text-gray-900 text-lg">Bank Support</div>
+                        <div className="text-xs text-gray-500">VK-HDFCBK</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 p-4 flex flex-col justify-end">
+                      <motion.div initial={{ scale: 0.8, opacity: 0, x: -20 }} animate={{ scale: 1, opacity: 1, x: 0 }} transition={{ type: "spring", bounce: 0.5 }} className="bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm max-w-[85%] text-gray-800 self-start border border-gray-200">
+                        Dear Customer, Your account will be BLOCKED today due to incomplete KYC. Please click here to update immediately: <span className="text-blue-600 underline cursor-pointer break-all font-semibold">http://update-kyc-verify-online.com/hdfc</span>
+                      </motion.div>
+                      <div className="text-xs text-gray-400 mt-1 ml-1">Today 10:42 AM</div>
+                    </div>
+
+                    <div className="p-4 bg-white border-t border-gray-200 grid grid-cols-2 gap-3 pb-8">
+                      <button onClick={() => setSimulatorStep(2)} className="bg-blue-50 border border-blue-200 text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-100 flex flex-col items-center justify-center gap-1 text-sm">
+                        <Globe className="w-5 h-5"/> Click Link
+                      </button>
+                      <button onClick={() => setSimulatorStep(3)} className="bg-red-50 border border-red-200 text-red-600 font-bold py-3 rounded-xl hover:bg-red-100 flex flex-col items-center justify-center gap-1 text-sm">
+                        <ShieldAlert className="w-5 h-5"/> Report & Block
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {simulatorStep === 2 && (
+                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="absolute inset-0 bg-red-600 text-white flex flex-col items-center justify-center p-6 text-center z-10">
+                    <XCircle className="w-24 h-24 mb-4 animate-bounce" />
+                    <h2 className="text-3xl font-black mb-4">YOU GOT SCAMMED!</h2>
+                    <p className="text-lg mb-8 text-red-100 font-medium">You just clicked a phishing link! In real life, hackers would now steal your bank details.</p>
+                    <div className="bg-red-800/50 p-4 rounded-xl w-full mb-8 text-left border border-red-500">
+                      <p className="font-bold mb-2">🚩 Red Flags Missed:</p>
+                      <ul className="list-disc pl-5 space-y-1 text-sm text-red-100">
+                        <li>Urgency ("BLOCKED today")</li>
+                        <li>Suspicious URL (update-kyc-verify-online)</li>
+                        <li>Unverified sender ID</li>
+                      </ul>
+                    </div>
+                    <button onClick={() => setSimulatorMode(false)} className="bg-white text-red-600 font-black py-3 px-8 rounded-xl w-full hover:bg-red-50">Back to Safety</button>
+                  </motion.div>
+                )}
+
+                {simulatorStep === 3 && (
+                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="absolute inset-0 bg-green-500 text-white flex flex-col items-center justify-center p-6 text-center z-10">
+                    <CheckCircle2 className="w-24 h-24 mb-4" />
+                    <h2 className="text-3xl font-black mb-4">GREAT JOB!</h2>
+                    <p className="text-lg mb-8 text-green-100 font-medium">You correctly identified the phishing attempt and protected your data!</p>
+                    <div className="bg-green-700/50 p-4 rounded-xl w-full mb-8 text-left border border-green-400">
+                      <p className="font-bold mb-2">🛡️ Why it was safe:</p>
+                      <ul className="list-disc pl-5 space-y-1 text-sm text-green-100">
+                        <li>You didn't panic under urgency</li>
+                        <li>You noticed the fake link</li>
+                        <li>You reported the sender</li>
+                      </ul>
+                    </div>
+                    <button onClick={() => setSimulatorMode(false)} className="bg-white text-green-600 font-black py-3 px-8 rounded-xl w-full hover:bg-green-50">Back to Home</button>
+                  </motion.div>
+                )}
+
+              </div>
+              
+              {/* Phone Footer */}
+              <div className="bg-gray-900 px-6 py-4 flex justify-center items-center rounded-b-[2.5rem]">
+                <div className="w-24 h-1 bg-gray-600 rounded-full"></div>
+              </div>
+            </div>
+            <button onClick={() => setSimulatorMode(false)} className="absolute top-6 right-6 text-white hover:text-red-400 bg-gray-900/50 p-3 rounded-full backdrop-blur-sm">
+              <X className="w-8 h-8" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ── Navbar ── */}
       <nav className="fixed top-0 w-full z-50 glass-panel border-b border-t-0 border-x-0 border-cyber-border/50 rounded-none bg-cyber-dark/90 px-4 py-3 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -181,6 +284,16 @@ export default function App() {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-xl text-cyber-text/80 max-w-2xl mx-auto lg:mx-0">
               {t.hero_desc}
             </motion.p>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="pt-4 flex justify-center lg:justify-start">
+              <button 
+                onClick={() => { setSimulatorMode(true); setSimulatorStep(0); }}
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-cyber-purple/20 border-2 border-cyber-purple hover:bg-cyber-purple hover:text-white text-cyber-purple font-black rounded-xl transition-all shadow-[0_0_20px_rgba(180,0,255,0.3)] hover:shadow-[0_0_40px_rgba(180,0,255,0.6)] overflow-hidden"
+              >
+                <div className="absolute inset-0 w-1/4 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:animate-shine"></div>
+                <Smartphone className="w-6 h-6 animate-pulse" />
+                Try Live Scam Simulator
+              </button>
+            </motion.div>
           </div>
           
           <motion.div 
